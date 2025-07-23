@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USDT Transfer Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f2f2f2;
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e8f5e9;
+      border: 1px solid #4caf50;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>USD TO NRS</h2>
+    
+    <label>Amount in USD</label>
+    <input type="number" id="usdAmount" placeholder="e.g. 500" inputmode="decimal" pattern="[0-9]*" />
+
+    <label>GNF rate your friend gave (GNF/USD)</label>
+    <input type="number" id="gnfRate" placeholder="e.g. 9200" inputmode="decimal" pattern="[0-9]*" />
+
+    <label>USDT Buy Rate (GNF/USDT)</label>
+    <input type="number" id="usdtBuyRate" placeholder="e.g. 9450" inputmode="decimal" pattern="[0-9]*" />
+
+    <label>USDT Sell Rate (NRS/USDT)</label>
+    <input type="number" id="usdtSellRate" placeholder="e.g. 148" inputmode="decimal" pattern="[0-9]*" />
+
+    <label>Friend's Requested Rate (NRS/USD)</label>
+    <input type="number" id="friendRate" placeholder="e.g. 138" inputmode="decimal" pattern="[0-9]*" />
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="result" id="output" style="display: none;"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      const usd = parseFloat(document.getElementById('usdAmount').value);
+      const gnfRate = parseFloat(document.getElementById('gnfRate').value);
+      const buyRate = parseFloat(document.getElementById('usdtBuyRate').value);
+      const sellRate = parseFloat(document.getElementById('usdtSellRate').value);
+      const friendNrsRate = parseFloat(document.getElementById('friendRate').value);
+
+      if (isNaN(usd) || isNaN(gnfRate) || isNaN(buyRate) || isNaN(sellRate) || isNaN(friendNrsRate)) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      const totalGnf = usd * gnfRate;
+      const usdtBought = totalGnf / buyRate;
+      const nrsGenerated = usdtBought * sellRate;
+      const nrsExpectedByFriend = usd * friendNrsRate;
+      const profitNrs = nrsGenerated - nrsExpectedByFriend;
+      const profitPercent = (profitNrs / nrsExpectedByFriend) * 100;
+
+      document.getElementById('output').style.display = 'block';
+      document.getElementById('output').innerHTML = `
+        <strong>Total GNF from Friend:</strong> ${totalGnf.toFixed(2)}<br/>
+        <strong>USDT Bought:</strong> ${usdtBought.toFixed(2)}<br/>
+        <strong>NRS Generated:</strong> ${nrsGenerated.toFixed(2)}<br/>
+        <strong>NRS Friend Expects:</strong> ${nrsExpectedByFriend.toFixed(2)}<br/>
+        <strong>Profit:</strong> ${profitNrs.toFixed(2)} NRS<br/>
+        <strong>Profit Margin:</strong> ${profitPercent.toFixed(2)}%
+      `;
+    }
+  </script>
+</body>
+</html>
